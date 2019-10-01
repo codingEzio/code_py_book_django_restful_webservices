@@ -20,6 +20,8 @@ class JSONResponse(HttpResponse):
 @csrf_exempt
 def toy_list(request):
     if request.method == 'GET':
+        # $ http :8000/toys/
+        # $ curl -iX GET localhost:8000/toys/
         toys = Toy.objects.all()
         toys_serializer = ToySerializer(toys, many=True)
         return JSONResponse(toys_serializer.data)
@@ -27,4 +29,13 @@ def toy_list(request):
 
 @csrf_exempt
 def toy_detail(request, pk):
-    pass
+    try:
+        toy = Toy.objects.get(pk=pk)
+    except Toy.DoesNotExist:
+        return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        # $ http :8000/toys/1
+        # $ curl -iX GET localhost:8000/toys/1
+        toy_serializer = ToySerializer(toy)
+        return JSONResponse(toy_serializer.data)
