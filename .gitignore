@@ -1,20 +1,9 @@
 
-# My own 
+# Anything else
+**/media/
 *.rdb
 .idea
 ._*
-
-# irrelevant files 
-# lalala
-
-# env folder
-env
-env_*
-Part*/env
-Project*/env
-Chapter*/env
-
-# other
 __pycache__
 .vscode
 .DS_Store
