@@ -26,6 +26,29 @@ def toy_list(request):
         toys_serializer = ToySerializer(toys, many=True)
         return JSONResponse(toys_serializer.data)
 
+    elif request.method == 'POST':
+        # $ http POST :8000/toys/ name="Sokoban" \
+        #   description="a mobile game" \
+        #   toy_category="Electronics" \
+        #   was_included_in_home=false \
+        #   release_date="2017-03-12T01:01:00.656665Z"
+        #
+        # $ curl -iX POST -H "Content-Type: application/json" -d
+        #   '{"name":"Tomb raider","description":"a mobile game",
+        #   "toy_category":"Electronics","was_included_in_home":"false",
+        #   "release_date":"2016-05-25T01:01:00.652465Z"}' localhost:8000/toys/
+        toy_data = JSONParser().parse(request)  # parsed to native types
+
+        toy_serializer = ToySerializer(data=toy_data)  # "rendered" by our serializer
+
+        if toy_serializer.is_valid():
+            toy_serializer.save()
+            return JSONResponse(toy_serializer.data,
+                                status=status.HTTP_201_CREATED)
+
+        return JSONResponse(toy_serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
+
 
 @csrf_exempt
 def toy_detail(request, pk):
