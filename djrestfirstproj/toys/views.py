@@ -49,6 +49,10 @@ def toy_list(request):
         return JSONResponse(toy_serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
 
+    elif request.method == 'OPTIONS':
+        return HttpResponse("We havn't implemented this yet!",
+                            status=status.HTTP_501_NOT_IMPLEMENTED)
+
 
 @csrf_exempt
 def toy_detail(request, pk):
@@ -99,3 +103,7 @@ def toy_detail(request, pk):
         # $ curl -iX DELETE localhost:8000/toys/3
         toy.delete()
         return HttpResponse(status=status.HTTP_204_NO_CONTENT)
+
+    elif request.method == 'OPTIONS':
+        return HttpResponse("We havn't implemented this yet!",
+                            status=status.HTTP_501_NOT_IMPLEMENTED)
