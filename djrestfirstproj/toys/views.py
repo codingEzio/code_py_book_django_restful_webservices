@@ -66,7 +66,7 @@ def toy_detail(request, pk):
     elif request.method == 'PUT':
         # Basically the same as `POST` but with 'pk' to update specific one
 
-        # http PUT :8000/toys/4 \
+        # $ http PUT :8000/toys/4 \
         #   name="Sokoban" \
         #   description="a mobile game" \
         #   toy_category="Electronics" \
@@ -86,3 +86,16 @@ def toy_detail(request, pk):
 
         return JSONResponse(toy_serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'PATCH':
+        # Use this if you just want to update a specific field.
+        # Test commands
+        #   $ http PUT :8000/toys/4 name='..'
+        #   $ curl -iX -H "..json' -d '{"name":".."}' localhost:8000/toys/4
+        pass
+
+    elif request.method == 'DELETE':
+        # $ http DELETE :8000/toys/3
+        # $ curl -iX DELETE localhost:8000/toys/3
+        toy.delete()
+        return HttpResponse(status=status.HTTP_204_NO_CONTENT)
