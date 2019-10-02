@@ -15,7 +15,8 @@ from toys.serializers import ToySerializer
 #   * only expose those needed methods, otherwise it'll raise "405 Method Not Allowed"
 #   * PARSER            ->  examines the header then determines the right parser
 #   * RENDERER/Response ->  now it accepts more than just 'application/json' (text/html ..)
-@api_view(['GET', 'POST', 'OPTIONS'])
+#   * HTTP verb OPTION  ->  now it's supported (=> `http OPTIONS LINK` or `curl -iX OPTIONS`)
+@api_view(['GET', 'POST'])
 def toy_list(request):
     if request.method == 'GET':
         # $ http :8000/toys/
@@ -45,12 +46,8 @@ def toy_list(request):
         return Response(toy_serializer.errors,
                         status=status.HTTP_400_BAD_REQUEST)
 
-    elif request.method == 'OPTIONS':
-        return Response("We havn't implemented this yet!",
-                        status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-
-@api_view(['GET', 'PUT', 'DELETE', 'OPTIONS'])
+@api_view(['GET', 'PUT', 'DELETE'])
 def toy_detail(request, pk):
     try:
         toy = Toy.objects.get(pk=pk)
@@ -98,7 +95,3 @@ def toy_detail(request, pk):
         #   $ http PUT :8000/toys/4 name='..'
         #   $ curl -iX -H "..json' -d '{"name":".."}' localhost:8000/toys/4
         pass
-
-    elif request.method == 'OPTIONS':
-        return Response("We havn't implemented this yet!",
-                        status=status.HTTP_405_METHOD_NOT_ALLOWED)
