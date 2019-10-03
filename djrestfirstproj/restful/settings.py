@@ -24,7 +24,8 @@ INSTALLED_APPS = [
     'django_extensions',
     'rest_framework',
 
-    'toys.apps.ToysConfig',
+    # 'toys.apps.ToysConfig',
+    'drones.apps.DronesConfig',
 ]
 
 MIDDLEWARE = [
@@ -62,8 +63,14 @@ WSGI_APPLICATION = 'restful.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME'  : os.path.join(BASE_DIR, 'db.sqlite3'),
+        # $ createuser -dP djrestful
+        # $ createdb -E utf-8 -U djrestful drones
+        'ENGINE'  : 'django.db.backends.postgresql',
+        'NAME'    : os.environ.get('POSTGRE_DRONE_DB_NAME'),
+        'USER'    : os.environ.get('POSTGRE_DRONE_DB_USER'),
+        'PASSWORD': os.environ.get('POSTGRE_DRONE_DB_PSWD'),
+        'HOST'    : os.environ.get('POSTGRE_DRONE_DB_HOST'),
+        'PORT'    : os.environ.get('POSTGRE_DRONE_DB_PORT'),
     }
 }
 
