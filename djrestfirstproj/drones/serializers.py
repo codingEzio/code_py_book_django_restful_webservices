@@ -10,9 +10,9 @@ from drones.models import (
 
 
 class DroneCategorySerializer(serializers.HyperlinkedModelSerializer):
-    drones = serializers.HyperlinkedModelSerializer(many=True,
-                                                    read_only=True,
-                                                    view_name='drone-detail')
+    drones = serializers.HyperlinkedRelatedField(many=True,
+                                                 read_only=True,
+                                                 view_name='drone-detail')
 
     class Meta:
         model = DroneCategory
@@ -32,7 +32,7 @@ class DroneSerializer(serializers.HyperlinkedModelSerializer):
                   'name',
                   'drone_category',
                   'manufacturing_date',
-                  'has_it_competed',
+                  'has_it_completed',
                   'inserted_timestamp')
 
 
