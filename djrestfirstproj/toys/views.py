@@ -92,6 +92,6 @@ def toy_detail(request, pk):
     elif request.method == 'PATCH':
         # Use this if you just want to update a specific field.
         # Test commands
-        #   $ http PUT :8000/toys/4 name='..'
+        #   $ http PATCH :8000/toys/4 name='..'
         #   $ curl -iX -H "..json' -d '{"name":".."}' localhost:8000/toys/4
         pass
