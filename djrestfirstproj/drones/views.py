@@ -61,3 +61,15 @@ class CompetitionDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Competition.objects.all()
     serializer_class = PilotCompetitionSerializer
     name = 'competition-detail'
+
+
+class APIRoot(generics.GenericAPIView):
+    name = 'api-root'
+
+    def get(self, request, *args, **kwargs):
+        return Response({
+            'drone-categories': reverse(DroneCategoryList.name, request=request),
+            'drones'          : reverse(DroneList.name, request=request),
+            'pilots'          : reverse(PilotList.name, request=request),
+            'competitions'    : reverse(CompetitionList.name, request=request),
+        })
