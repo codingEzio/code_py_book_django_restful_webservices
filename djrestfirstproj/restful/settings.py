@@ -23,6 +23,7 @@ INSTALLED_APPS = [
 
     'django_extensions',
     'rest_framework',
+    'django_filters',
 
     # 'toys.apps.ToysConfig',
     'drones.apps.DronesConfig',
@@ -117,4 +118,10 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'drones.custompagination.LimitOffsetPaginationWithUpperBound',
 
     'PAGE_SIZE'               : 3,
+
+    'DEFAULT_FILTER_BACKENDS' : (
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.OrderingFilter',
+        'rest_framework.filters.SearchFilter',
+    ),
 }
