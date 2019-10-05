@@ -1,3 +1,5 @@
+from django.contrib.auth.models import User
+
 from rest_framework import serializers
 
 from drones import views
@@ -25,12 +27,14 @@ class DroneCategorySerializer(serializers.HyperlinkedModelSerializer):
 class DroneSerializer(serializers.HyperlinkedModelSerializer):
     drone_category = serializers.SlugRelatedField(queryset=DroneCategory.objects.all(),
                                                   slug_field='name')
+    owner = serializers.ReadOnlyField(source='owner.username')
 
     class Meta:
         model = Drone
         fields = ('url',
                   'name',
                   'drone_category',
+                  'owner',
                   'manufacturing_date',
                   'has_it_completed',
                   'inserted_timestamp')
@@ -78,4 +82,23 @@ class PilotCompetitionSerializer(serializers.ModelSerializer):
                   'distance_in_feet',
                   'distance_achievement_date',
                   'pilot',
+                  'drone')
+
+
+class UserDroneSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Drone
+        fields = ('url',
+                  'name')
+
+
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    drones = UserDroneSerializer(many=True,
+                                 read_only=True)
+
+    class Meta:
+        model = User
+        fields = ('url',
+                  'pk',
+                  'username',
                   'drone')
