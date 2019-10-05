@@ -78,16 +78,20 @@ class PilotDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class CompetitionFilter(restframework_filters.FilterSet):
-    from_achievement_date = DateTimeFilter(name='distance_achievement_date',
+    from_achievement_date = DateTimeFilter(label='Distance achievement date starts from',
+                                           name='distance_achievement_date',
                                            lookup_expr='gte')
-    to_achievement_date = DateTimeFilter(name='distance_achievement_date',
+    to_achievement_date = DateTimeFilter(label='Distance achievement date ends with',
+                                         name='distance_achievement_date',
                                          lookup_expr='lte')
-    min_distance_in_feet = NumberFilter(name='distance_in_feet',
+    min_distance_in_feet = NumberFilter(label='Distance in feet large than',
+                                        name='distance_in_feet',
                                         lookup_expr='gte')
-    max_distance_in_feet = NumberFilter(name='distance_in_feet',
+    max_distance_in_feet = NumberFilter(label='Distance in feet less than',
+                                        name='distance_in_feet',
                                         lookup_expr='lte')
-    drone_name = AllValuesFilter(name='drone__name')
-    pilot_name = AllValuesFilter(name='pilot__name')
+    drone_name = AllValuesFilter(label='✈️ Drone‍', name='drone__name')
+    pilot_name = AllValuesFilter(label='👩 Pilot', name='pilot__name')
 
     class Meta:
         model = Competition
