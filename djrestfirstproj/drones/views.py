@@ -6,7 +6,10 @@ from rest_framework import filters as restframework_filters
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
+
 from rest_framework import permissions
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
 
 from drones import custompermission
 
@@ -82,11 +85,17 @@ class PilotList(generics.ListCreateAPIView):
     ordering_fields = ('name',
                        'races_count')
 
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
 
 class PilotDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Pilot.objects.all()
     serializer_class = PilotSerializer
     name = 'pilot-detail'
+
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
 
 
 class CompetitionFilter(restframework_filters.FilterSet):

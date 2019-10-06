@@ -22,8 +22,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'django_extensions',
-    'rest_framework',
     'django_filters',
+
+    'rest_framework',
+    'rest_framework.authtoken',
 
     # 'toys.apps.ToysConfig',
     'drones.apps.DronesConfig',
