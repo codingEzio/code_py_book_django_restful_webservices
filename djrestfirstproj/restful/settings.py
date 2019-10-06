@@ -136,10 +136,10 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.UserRateThrottle',
     ),
     'DEFAULT_THROTTLE_RATES'        : {
-        'anon'  : '3/hour',
-        'user'  : '5/hour',
-        'drones': '20/hour',
-        'pilots': '15/hour',
+        'anon'  : '3/min',
+        'user'  : '5/min',
+        'drones': '20/min',
+        'pilots': '15/min',
     },
 
     'DEFAULT_VERSIONING_CLASS'      : 'rest_framework.versioning.NamespaceVersioning',
