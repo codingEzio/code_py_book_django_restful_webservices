@@ -1,11 +1,13 @@
 from django.core.urlresolvers import reverse
 from django.utils.http import urlencode
+from django.contrib.auth.models import User
 
 from rest_framework import status as rest_status_code
 from rest_framework.test import APITestCase
+from rest_framework.authtoken.models import Token
 
 from drones import views
-from drones.models import DroneCategory
+from drones.models import DroneCategory, Pilot
 
 
 class DroneCategoryTests(APITestCase):
@@ -16,6 +18,7 @@ class DroneCategoryTests(APITestCase):
     """
 
     VERSION_PREFIX = '/v1'
+    PRINT_MSG_PREFIX = '[PRINT] '
 
     def helper_post_drone_category(self, name):
         url = reverse(views.DroneCategoryList.name)
@@ -37,8 +40,8 @@ class DroneCategoryTests(APITestCase):
 
         # You can only see this if you add the '--capture=no' flag
         # of course you should avoid using 'print' statements in tests!
-        print(f"[PRINT] pk  : {DroneCategory.objects.get().pk}")
-        print(f"[PRINT] url : {url}")
+        print(f"{self.PRINT_MSG_PREFIX}pk  : {DroneCategory.objects.get().pk}")
+        print(f"{self.PRINT_MSG_PREFIX}url : {url}")
 
         assert response.status_code == rest_status_code.HTTP_201_CREATED
         assert DroneCategory.objects.count() == 1
@@ -87,8 +90,8 @@ class DroneCategoryTests(APITestCase):
                f'?{urlencode(filter_by_name)}')
         response = self.client.get(url, format='json')
 
-        print(f"[PRINT] url      : {url}")
-        print(f"[PRINT] response : {response}")
+        print(f"{self.PRINT_MSG_PREFIX}url      : {url}")
+        print(f"{self.PRINT_MSG_PREFIX}response : {response}")
 
         assert response.status_code == rest_status_code.HTTP_200_OK
         assert response.data['count'] == 1
@@ -107,3 +110,69 @@ class DroneCategoryTests(APITestCase):
 
         assert patch_response.status_code == rest_status_code.HTTP_200_OK
         assert patch_response.data['name'] == updated_drone_category_name
+
+
+class PilotTests(APITestCase):
+    VERSION_PREFIX = '/v1'
+    PRINT_MSG_PREFIX = '[PRINT] '
+
+    def helper_post_pilot(self, name, gender, races_count):
+        url = self.VERSION_PREFIX + reverse(views.PilotList.name)
+        data = { 'name'       : name,
+                 'gender'     : gender,
+                 'races_count': races_count, }
+        response = self.client.post(url, data, format='json')
+
+        print(f'{self.PRINT_MSG_PREFIX}url : {url}')
+        return response
+
+    def helper_create_user_and_set_token_credentials(self):
+        user = User.objects.create_user('user01',
+                                        'user01@haha.com',
+                                        'user01password')
+        token = Token.objects.create(user=user)
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {token.key}')
+
+    def test_post_and_get_pilot(self):
+        self.helper_create_user_and_set_token_credentials()
+        new_pilot_name = 'Nancy'
+        new_pilot_gender = Pilot.FEMALE
+        new_pilot_races_count = 3
+
+        response = self.helper_post_pilot(new_pilot_name,
+                                          new_pilot_gender,
+                                          new_pilot_races_count)
+        print(f'{self.PRINT_MSG_PREFIX}nPk : {Pilot.objects.get().pk}')
+
+        assert response.status_code == rest_status_code.HTTP_201_CREATED
+        assert Pilot.objects.count() == 1
+        saved_pilot = Pilot.objects.get()
+
+        assert saved_pilot.name == new_pilot_name
+        assert saved_pilot.gender == new_pilot_gender
+        assert saved_pilot.races_count == new_pilot_races_count
+
+        url = self.VERSION_PREFIX + reverse(views.PilotDetail.name,
+                                            None,
+                                            { saved_pilot.pk })
+        authorized_get_response = self.client.get(url, format='json')
+        assert authorized_get_response.status_code == rest_status_code.HTTP_200_OK
+        assert authorized_get_response.data['name'] == new_pilot_name
+
+        self.client.credentials()
+        unauthorized_get_response = self.client.get(url, format='json')
+        assert unauthorized_get_response.status_code == rest_status_code.HTTP_401_UNAUTHORIZED
+
+    def test_try_to_post_pilot_without_token(self):
+        new_pilot_name = 'Unauthorized Pilot'
+        new_pilot_gender = Pilot.MALE
+        new_pilot_races_count = 2
+        response = self.helper_post_pilot(new_pilot_name,
+                                          new_pilot_gender,
+                                          new_pilot_races_count)
+
+        print(f'{self.PRINT_MSG_PREFIX}response    : {response}')
+        print(f'{self.PRINT_MSG_PREFIX}pilot count : {Pilot.objects.count()}')
+
+        assert response.status_code == rest_status_code.HTTP_401_UNAUTHORIZED
+        assert Pilot.objects.count() == 0
