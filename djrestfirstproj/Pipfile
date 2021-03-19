@@ -7,7 +7,7 @@ verify_ssl = true
 
 [packages]
 django = "==1.11.23"
-djangorestframework = "==3.6.4"
+djangorestframework = "==3.11.2"
 django-filter = "==1.0.4"
 psycopg2-binary = "==2.7.4"
 python-dotenv = "==0.10.3"
